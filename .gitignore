@@ -1,1 +1,3 @@
 TI Data/*
+__pycache__
+sqlite.db
