@@ -1,19 +1,19 @@
-import aiosqlite
-from Database.DatabaseProvisioning import provision_database
+import sqlite3
+from Database.DatabaseProvisioner import provision_database
 
 db = None
 
-async def database_init():
+def database_init():
     print("[SQLite] Starting...")
     global db
-    db = await aiosqlite.connect("sqlite.db")
+    db = sqlite3.connect("sqlite.db")
     
-    await provision_database(db)
+    provision_database(db)
     
     print("[SQLite] Started!")
 
 
-class AsyncDatabase:
+class Database:
     
     def __init__(self, file):
         self.file = file
@@ -23,18 +23,19 @@ class AsyncDatabase:
     exec_cmd: str = SQL command to execute
     p: bool = Print SQL command before executing
     '''
-    async def execute(self, exec_cmd: str, p=False):
+    def execute(self, exec_cmd: str, p=False):
         if p: print(exec_cmd)
         
         if exec_cmd.startswith("SELECT"):
-            val = await db.execute_fetchall(exec_cmd)
+            val = db.execute(exec_cmd)
+            val = val.fetchall()
             if len(val) == 1:
                 if len(val[0]) == 1:
                     return val[0][0]
             return val
         else:
-            await db.execute(exec_cmd)
-            await db.commit()
+            db.execute(exec_cmd)
+            db.commit()
     
     def exists(self, rows):
         return rows > 0

@@ -1,18 +1,16 @@
 import asyncio
-from Database.DatabaseConnector import database_init, AsyncDatabase
+import os
+from Database.DatabaseConnector import database_init, Database
 
-db = AsyncDatabase("main.py")
+db = Database("main.py")
 
 print("ToF SIMS Sorting Program")
 
 async def main():
-    await database_init()
-    await db.execute(
-        "INSERT INTO TEST values (`0`)"
-    )
-    val = await db.execute("SELECT * FROM TEST")
+    database_init()
+    val = db.execute("SELECT * FROM TEST")
     print(val)
     
-    
 
-if __name__ == "__main__": asyncio.run(main())
+try: asyncio.run(main())
+except Exception as e: print(e)
